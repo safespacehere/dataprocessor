@@ -1,0 +1,1 @@
+Program for receiving data from a database by criteria from JSON and processing them
