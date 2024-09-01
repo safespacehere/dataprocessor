@@ -1,4 +1,4 @@
-package requests;
+package ru.safespacehere.dataprocessor.requests;
 
 import java.math.BigDecimal;
 import java.sql.*;
