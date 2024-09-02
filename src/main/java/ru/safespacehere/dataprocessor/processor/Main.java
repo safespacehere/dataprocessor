@@ -28,6 +28,7 @@ public class Main {
 
         File jsonFileInput = new File(args[1]).getAbsoluteFile();
         File jsonFileOutput = new File(args[2]).getAbsoluteFile();
+
         try {
             if(!args[0].equals(Const.search) && !args[0].equals(Const.stat)){
                 throw new RuntimeException("Указаны несуществующие операции");
@@ -85,7 +86,7 @@ public class Main {
                                 jsonParser.nextToken();
                                 if (!jsonParser.getText().equals(Const.minTimes)) {
                                     throw new NotExpectedTokenException("Передан неверный JSON-токен. " +
-                                            "Ожидаемый токен: " + Const.minTimes + "Полученный токен: " + jsonParser.getText());
+                                            "Ожидаемый токен: " + Const.minTimes + ". Полученный токен: " + jsonParser.getText());
                                 }
                                 jsonParser.nextToken();
                                 Integer times = jsonParser.getIntValue();
@@ -116,7 +117,7 @@ public class Main {
                                 jsonParser.nextToken();
                                 if (!jsonParser.getText().equals(Const.maxExpenses)) {
                                     throw new NotExpectedTokenException("Передан неверный JSON-токен. " +
-                                            "Ожидаемый токен: " + Const.maxExpenses + "Полученный токен: " + jsonParser.getText());
+                                            "Ожидаемый токен: " + Const.maxExpenses + ". Полученный токен: " + jsonParser.getText());
                                 }
                                 jsonParser.nextToken();
                                 BigDecimal maxCost = new BigDecimal(jsonParser.getText());
@@ -187,7 +188,7 @@ public class Main {
                     jsonParser.nextToken();
                     if (!Const.endDate.equals(jsonParser.getText())) {
                         throw new NotExpectedTokenException("Передан неверный JSON-токен. " +
-                                "Ожидаемый токен: " + Const.endDate + "Полученный токен: " + jsonParser.getText());
+                                "Ожидаемый токен: " + Const.endDate + ". Полученный токен: " + jsonParser.getText());
                     }
                     jsonParser.nextToken();
                     LocalDate end = LocalDate.parse(jsonParser.getText());
@@ -247,6 +248,9 @@ public class Main {
             connection.close();
 
             prettyPrintIntoFile(jsonFileOutput);
+        }
+        catch (NumberFormatException numberException) {
+            exceptionOutput(jsonFileOutput, "Неправильный формат числа.");
         }
         catch (DateTimeParseException parseException) {
             exceptionOutput(jsonFileOutput, "Неправильный формат даты.");
