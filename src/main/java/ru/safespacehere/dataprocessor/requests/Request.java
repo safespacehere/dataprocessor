@@ -2,8 +2,9 @@ package ru.safespacehere.dataprocessor.requests;
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.time.LocalDate;
 
-public class request {
+public class Request {
     public static ResultSet searchBySurname(Connection conn, String surname) throws SQLException{
         PreparedStatement preparedStatement = conn.prepareStatement(
                 "SELECT CustomerSurname, CustomerName " +
@@ -46,12 +47,13 @@ public class request {
                         "JOIN Purchases on Purchases.CustomerId = Customers.CustomerId " +
                         "JOIN Products on Products.ProductId = Purchases.ProductId " +
                         "GROUP BY Customers.CustomerId " +
-                        "HAVING COUNT(Customers.CustomerId) < ?");
+                        "ORDER BY COUNT(Customers.CustomerId)" +
+                        "LIMIT ?");
         preparedStatement.setInt(1, badCustomers);
         return preparedStatement.executeQuery();
     }
 
-    public static ResultSet statForPeriod(Connection conn, Date startDate, Date endDate) throws SQLException{
+    public static ResultSet statForPeriod(Connection conn, LocalDate startDate, LocalDate endDate) throws SQLException{
         PreparedStatement preparedStatement = conn.prepareStatement(
                 "Select Customers.CustomerId, CustomerSurname, CustomerName, productname, SUM(Price)\n" +
                         "FROM Customers " +
@@ -60,8 +62,8 @@ public class request {
                         "WHERE purchasedate BETWEEN ? and ? and EXTRACT(DOW FROM purchasedate) BETWEEN 1 AND 5 " +
                         "GROUP BY productname, Customers.CustomerId " +
                         "Order by Customers.CustomerId");
-        preparedStatement.setDate(1, startDate);
-        preparedStatement.setDate(2, endDate);
+        preparedStatement.setObject(1, startDate);
+        preparedStatement.setObject(2, endDate);
         return preparedStatement.executeQuery();
     }
 }
