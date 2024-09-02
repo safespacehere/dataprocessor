@@ -1,7 +1,7 @@
 Program for receiving data from a database by criteria from JSON and processing them
 
 Инструкция по сборке/запуску:
-1. Развернуть базу:
+1. Развернуть базу, одним из следующих способов:
 
       а) При наличии docker выполнить команду ```docker-compose up -d```
 в директории с проектом, которая выполнит скрипт init.sql и создаст базу данных на его основе.
