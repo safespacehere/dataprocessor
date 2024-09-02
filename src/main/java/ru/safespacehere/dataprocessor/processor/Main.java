@@ -22,12 +22,16 @@ import java.time.format.DateTimeParseException;
 
 public class Main {
     public static void main(String[] args) {
-        if(args.length != 2){
+        if(args.length != 3){
             throw new RuntimeException("Неправильное число аргументов.");
         }
-        File jsonFileInput = new File(args[0]).getAbsoluteFile();
-        File jsonFileOutput = new File(args[1]).getAbsoluteFile();
+
+        File jsonFileInput = new File(args[1]).getAbsoluteFile();
+        File jsonFileOutput = new File(args[2]).getAbsoluteFile();
         try {
+            if(!args[0].equals(Const.search) && !args[0].equals(Const.stat)){
+                throw new RuntimeException("Указаны несуществующие операции");
+            }
             ResultSet resultSet;
 
             JsonParser jsonParser = new JsonFactory().createParser(jsonFileInput);
@@ -44,7 +48,7 @@ public class Main {
             jsonGenerator.writeStartObject();
             while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
                 String fieldname = jsonParser.getCurrentName();
-                if (Const.criterias.equals(fieldname)) {
+                if (args[0].equals(Const.search) && Const.criterias.equals(fieldname)) {
                     jsonGenerator.writeStringField(Const.type, Const.search);
                     jsonGenerator.writeFieldName(Const.results);
                     jsonGenerator.writeStartArray();
@@ -177,7 +181,7 @@ public class Main {
                     }
                     jsonGenerator.writeEndArray();
                 }
-                if (Const.startDate.equals(fieldname)) {
+                else if (args[0].equals(Const.stat) && Const.startDate.equals(fieldname)) {
                     jsonParser.nextToken();
                     LocalDate start = LocalDate.parse(jsonParser.getText());
                     jsonParser.nextToken();
